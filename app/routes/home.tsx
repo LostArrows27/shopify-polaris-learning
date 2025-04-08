@@ -1,5 +1,6 @@
+import { useNavigate } from "react-router";
 import type { Route } from "./+types/home";
-import { Page, Card, Text, Banner, Button, Layout } from "@shopify/polaris";
+import { Page, Text, Button, BlockStack } from "@shopify/polaris";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,38 +13,51 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return (
-    <Page title="Shopify Polaris Demo">
-      <Layout>
-        <Layout.Section>
-          <Banner
-            title="Shopify Polaris is working!"
-            tone="success"
-            action={{
-              content: "Learn more",
-              url: "https://polaris.shopify.com",
-            }}
-          > 
-            <p>
-              You've successfully integrated Shopify Polaris with React Router.
-            </p>
-          </Banner>
-        </Layout.Section>
+  let navigate = useNavigate();
 
-        <Layout.Section>
-          <Card>
-            <Text as="h2" variant="headingMd">
-              Welcome to Polaris
+  return (
+    <Page fullWidth>
+      <div className="flex flex-col items-center justify-center h-screen py-0 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 text-center">
+          {/* Shopify Logo */}
+          <div>
+            <img
+              className="mx-auto h-16 w-auto"
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Shopify_logo.svg/2560px-Shopify_logo.svg.png"
+              alt="Shopify"
+            />
+          </div>
+
+          {/* Main text */}
+          <BlockStack gap="400">
+            <Text
+              variant="headingXl"
+              as="h1"
+              alignment="center"
+              fontWeight="bold"
+            >
+              Welcome to Shopify Admin
             </Text>
-            <Text as="p" variant="bodyMd">
-              This is a simple card component from Shopify Polaris.
+
+            {/* Secondary text */}
+            <Text variant="bodyLg" as="p" alignment="center" tone="subdued">
+              Manage your account and shipping address details in one place.
             </Text>
-            <div style={{ marginTop: "1rem" }}>
-              <Button>Polaris Button</Button>
-            </div>
-          </Card>
-        </Layout.Section>
-      </Layout>
+          </BlockStack>
+
+          {/* Button */}
+          <div className="mt-8">
+            <Button
+              variant="primary"
+              size="large"
+              fullWidth
+              onClick={() => navigate("/account")}
+            >
+              Create Account
+            </Button>
+          </div>
+        </div>
+      </div>
     </Page>
   );
 }
