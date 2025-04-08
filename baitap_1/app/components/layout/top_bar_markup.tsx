@@ -5,7 +5,15 @@ import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import type { UserMenuProps } from "@shopify/polaris/build/ts/src/components/TopBar";
 
-const TopBarMarkup = () => {
+type TopBarMarkupProps = {
+  mobileNavigationActive: boolean;
+  setMobileNavigationActive: () => void;
+};
+
+const TopBarMarkup = ({
+  mobileNavigationActive,
+  setMobileNavigationActive,
+}: TopBarMarkupProps) => {
   const [searchValue, setSearchValue] = useState("");
   const [userMenuActive, setUserMenuActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
@@ -86,6 +94,7 @@ const TopBarMarkup = () => {
       </Modal>
       <TopBar
         showNavigationToggle
+        onNavigationToggle={setMobileNavigationActive}
         userMenu={
           <UserMenuHeader
             fullName={fullName}

@@ -12,8 +12,6 @@ import {
   Tooltip,
 } from "@shopify/polaris";
 import type { Route } from "./+types/home";
-import AccountForm from "~/components/account/account_form";
-import AddressForm from "~/components/account/address_form";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import type { UserFormData } from "~/types/app.type";
 import { zodResolver } from "@hookform/resolvers/zod";
