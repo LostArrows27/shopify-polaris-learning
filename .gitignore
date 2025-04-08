@@ -1,6 +1,6 @@
 .DS_Store
-/node_modules/
+baitap_1/node_modules/
 
 # React Router
-/.react-router/
-/build/
+baitap_1/.react-router/
+baitap_1/build/
