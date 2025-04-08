@@ -8,13 +8,10 @@ export type Address = {
 };
 
 export interface UserState {
-  fullName: string;
-  email: string;
+  fullName: string | undefined;
+  email: string | undefined;
   addresses: Address[];
   setUserInfo: (fullName: string, email: string) => void;
-  addAddress: (address: Address) => void;
-  updateAddress: (id: string, updatedAddress: Address) => void;
-  removeAddress: (id: string) => void;
   setAddresses: (addresses: Address[]) => void;
   reset: () => void;
 }

@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+import "./style/app.css";
 import "@shopify/polaris/build/esm/styles.css";
 import { AppProvider } from "@shopify/polaris";
 

@@ -10,7 +10,7 @@ import {
   EmptyState,
 } from "@shopify/polaris";
 import type { Route } from "./+types/home";
-import { useUserStore } from "~/store/use_user_store";
+import { useUserStore } from "~/hooks/use_user_store";
 import shortenName from "~/utils/shorten_name";
 import { useNavigate } from "react-router";
 
@@ -73,19 +73,17 @@ const Address = () => {
               }))}
               renderItem={(item) => {
                 const { id, name, location } = item;
-                const media = (
-                  <Avatar
-                    initials={shortenName(name)}
-                    size="md"
-                    name={shortenName(name)}
-                  />
-                );
-
                 return (
                   <ResourceItem
                     id={id}
                     url={"#"}
-                    media={media}
+                    media={
+                      <Avatar
+                        initials={shortenName(name)}
+                        size="md"
+                        name={shortenName(name)}
+                      />
+                    }
                     accessibilityLabel={`View details for ${name}`}
                   >
                     <Text variant="bodyMd" fontWeight="bold" as="h3">

@@ -17,8 +17,8 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import type { UserFormData } from "~/types/app.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "~/schema/user_schema";
-import { useUserStore } from "~/store/use_user_store";
-import { useEffect } from "react";
+import { useUserStore } from "~/hooks/use_user_store";
+import { useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export function meta({}: Route.MetaArgs) {
@@ -31,19 +31,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 const AccountPage = () => {
-  const {
-    fullName,
-    email,
-    addresses,
-    setUserInfo,
-    addAddress,
-    setAddresses,
-    removeAddress,
-  } = useUserStore();
-
-  console.log("fullName", fullName);
-  console.log("email", email);
-  console.log("addresses", addresses);
+  const { fullName, email, addresses, setUserInfo, setAddresses } =
+    useUserStore();
 
   const {
     control,
@@ -70,6 +59,17 @@ const AccountPage = () => {
     name: "addresses",
   });
 
+  // NOTE: load init data from store
+  useEffect(() => {
+    if (fullName && email) {
+      reset({
+        fullName,
+        email,
+        addresses,
+      });
+    }
+  }, [fullName, email, addresses, reset]);
+
   const onSubmit = (data: UserFormData) => {
     console.log("Form data submitted: ", data);
     setUserInfo(data.fullName.trim(), data.email);
@@ -83,20 +83,9 @@ const AccountPage = () => {
     reset(data);
   };
 
-  const addNewAddress = () => {
+  const addNewAddressInput = useCallback(() => {
     append({ id: uuidv4(), address: "", city: "" });
-  };
-
-  // NOTE: load init data from store
-  useEffect(() => {
-    if (fullName && email) {
-      reset({
-        fullName,
-        email,
-        addresses,
-      });
-    }
-  }, [fullName, email, addresses, reset]);
+  }, [append]);
 
   return (
     <div className="w-3/4">
@@ -221,7 +210,7 @@ const AccountPage = () => {
                 )}
               </BlockStack>
               <div className="flex mt-5 w-full gap-2 justify-end">
-                <Button onClick={addNewAddress}>New Address</Button>
+                <Button onClick={addNewAddressInput}>New Address</Button>
                 <Button submit variant="primary">
                   Save
                 </Button>

@@ -6,28 +6,11 @@ import type { UserState } from "~/types/app.type";
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      fullName: "",
-      email: "",
+      fullName: undefined,
+      email: undefined,
       addresses: [{ id: "1", address: "", city: "" }],
 
       setUserInfo: (fullName, email) => set({ fullName, email }),
-
-      addAddress: (address) =>
-        set((state) => ({
-          addresses: [...state.addresses, address],
-        })),
-
-      updateAddress: (id, updatedAddress) =>
-        set((state) => ({
-          addresses: state.addresses.map((addr) =>
-            addr.id === id ? updatedAddress : addr
-          ),
-        })),
-
-      removeAddress: (id) =>
-        set((state) => ({
-          addresses: state.addresses.filter((addr) => addr.id !== id),
-        })),
 
       setAddresses: (addresses) => set({ addresses }),
 
