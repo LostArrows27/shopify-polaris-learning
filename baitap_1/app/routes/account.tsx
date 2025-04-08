@@ -230,7 +230,7 @@ const AccountPage = () => {
             setToastActive(false);
           }}
           content="Update successfully!"
-          duration={1000}
+          duration={2000}
         />
       )}
     </>

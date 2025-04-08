@@ -14,7 +14,8 @@ export const useUserStore = create<UserState>()(
 
       setAddresses: (addresses) => set({ addresses }),
 
-      reset: () => set({ fullName: "", email: "", addresses: [] }),
+      reset: () =>
+        set({ fullName: undefined, email: undefined, addresses: [] }),
     }),
     {
       name: "user-storage",
