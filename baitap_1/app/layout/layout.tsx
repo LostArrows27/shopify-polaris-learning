@@ -30,7 +30,7 @@ const Layout = () => {
         showMobileNavigation={mobileNavigationActive}
         onNavigationDismiss={toggleMobileNavigationActive}
       >
-        <div className="pl-[200px] pb-4 pt-10">
+        <div className="flex justify-center items-center pl-0 pb-4 pt-10">
           <Outlet />
         </div>
       </Frame>

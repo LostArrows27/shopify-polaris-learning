@@ -90,7 +90,7 @@ const AccountPage = () => {
 
   return (
     <>
-      <div className="w-3/4">
+      <div className="xl:w-3/4 w-[90%]">
         <div className="mb-10">
           <Text variant="headingLg" as="h1" fontWeight="bold">
             Account
