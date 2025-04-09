@@ -1,0 +1,11 @@
+{
+  "fullName": "Nguyễn Thành Dũng",
+  "email": "dungnt6@bsscommerce.com",
+  "addresses": [
+    {
+      "id": "1",
+      "address": "Pham Van Dong, Cau Giay, Ha Noi",
+      "city": "Ha Noi"
+    }
+  ]
+}
