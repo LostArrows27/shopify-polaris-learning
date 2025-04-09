@@ -7,12 +7,62 @@ import {
 } from "@shopify/polaris";
 import shortenName from "@/utils/shorten_name";
 import { useRouter } from "next/navigation";
-import { useUserAddressStore } from "@/hooks/use_user_store";
+import {
+  useAddressStoreDispatch,
+  useAddressStoreSelector,
+} from "@/hooks/use_address_store";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import {
+  setAddresses,
+  setError,
+  setLoading,
+} from "@/libs/slices/address_slice";
+import { api } from "@/config/axios";
+import { Address, ServerResponse } from "@/types/app.type";
 
 const AddressList = () => {
-  const { addresses, loading } = useUserAddressStore();
+  const dispatch = useAddressStoreDispatch();
+
+  const { addresses, loading } = useAddressStoreSelector(
+    (state) => state.addresses
+  );
 
   const router = useRouter();
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        dispatch(setLoading(true));
+        const res = await api.get("/address");
+        const data = res.data as ServerResponse;
+
+        if (data.status === 200 && data.data) {
+          toast({
+            title: "Address Value",
+            description: (
+              <pre className="mt-2 w-[340px] rounded-md overflow-x-auto bg-slate-950 p-4">
+                <code className="text-white whitespace-pre-wrap break-words">
+                  {JSON.stringify(data.data.addresses, null, 2)}
+                </code>
+              </pre>
+            ),
+          });
+          dispatch(setAddresses(data.data.addresses as Address[]));
+        } else {
+          dispatch(setError(data.message || "Failed to fetch addresses"));
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+        dispatch(setError("Error fetching addresses"));
+      }
+    };
+
+    fetchAddresses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const emptyStateMarkup =
     !addresses.length && !addresses.length ? (
