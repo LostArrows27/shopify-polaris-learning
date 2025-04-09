@@ -10,6 +10,7 @@ import { api } from "@/config/axios";
 import { ServerResponse } from "@/types/app.type";
 import { useToast } from "@/hooks/use-toast";
 import { StatusCodes } from "http-status-codes";
+import { useUserInformation } from "@/hooks/use_user_information";
 
 type TopBarMarkupProps = {
   setMobileNavigationActive: () => void;
@@ -24,6 +25,8 @@ const TopBarMarkup = ({ setMobileNavigationActive }: TopBarMarkupProps) => {
   const { toast } = useToast();
 
   const { fullName } = useUserAddressStore();
+
+  const { reset } = useUserInformation();
 
   const router = useRouter();
 
@@ -55,6 +58,8 @@ const TopBarMarkup = ({ setMobileNavigationActive }: TopBarMarkupProps) => {
     }
 
     setLoading(false);
+
+    reset();
 
     router.push("/");
   }, []);
