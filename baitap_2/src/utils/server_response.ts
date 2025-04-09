@@ -1,11 +1,5 @@
-import { Json } from "@/types/app.type";
+import { ServerResponse } from "@/types/app.type";
 import { StatusCodes } from "http-status-codes";
-
-type ServerResponse = {
-  status: StatusCodes;
-  message: string;
-  data?: Json;
-};
 
 export const serverResponse = (response: ServerResponse) => {
   return new Response(JSON.stringify(response), {

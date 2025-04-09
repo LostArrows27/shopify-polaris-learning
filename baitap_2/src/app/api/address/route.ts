@@ -46,3 +46,20 @@ export async function POST(request: Request) {
     return serverErrorResponse(err);
   }
 }
+
+export async function DELETE() {
+  try {
+    await writeJSONFileAsync({
+      fullName: "",
+      email: "",
+      addresses: [],
+    });
+
+    return serverResponse({
+      status: StatusCodes.OK,
+      message: "User addresses deleted successfully",
+    })
+  } catch (err) {
+    return serverErrorResponse(err);
+  }
+}

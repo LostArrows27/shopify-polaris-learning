@@ -1,4 +1,5 @@
 import { userSchema } from "@/schema/user_schema";
+import { StatusCodes } from "http-status-codes";
 import type { z } from "zod";
 
 export type Address = {
@@ -25,3 +26,9 @@ export type Json =
   | null
   | { [key: string]: Json | undefined }
   | Json[];
+
+export type ServerResponse = {
+  status: StatusCodes;
+  message: string;
+  data?: UserFormData;
+};
