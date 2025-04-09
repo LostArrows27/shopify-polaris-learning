@@ -1,24 +1,44 @@
-import { UserState } from "@/types/app.type";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { api } from "@/config/axios";
+import { ServerResponse } from "@/types/app.type";
+import { useEffect, useState } from "react";
+import { useUserInformation } from "./use_user_information";
 
-// NOTE: use persist -> store data in localStorage (default)
-export const useUserStore = create<UserState>()(
-  persist(
-    (set) => ({
-      fullName: undefined,
-      email: undefined,
-      addresses: [{ id: "1", address: "", city: "" }],
+export const useUserAddressStore = () => {
+  const { setAddresses, setUserInfo, fullName, email, addresses } =
+    useUserInformation();
 
-      setUserInfo: (fullName, email) => set({ fullName, email }),
+  const [loading, setLoading] = useState(true);
 
-      setAddresses: (addresses) => set({ addresses }),
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        setLoading(true);
 
-      reset: () =>
-        set({ fullName: undefined, email: undefined, addresses: [] }),
-    }),
-    {
-      name: "user-storage",
-    }
-  )
-);
+        const res = await api.get("/address");
+
+        const data = res.data as ServerResponse;
+
+        if (data.status === 200 && data.data) {
+          setAddresses(data.data?.addresses);
+          setUserInfo(data.data?.fullName, data.data?.email);
+        } else {
+          console.error("Error fetching addresses:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return {
+    addresses,
+    fullName,
+    email,
+    loading,
+  };
+};

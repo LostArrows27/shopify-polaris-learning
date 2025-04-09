@@ -1,9 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BlockStack, Modal, TopBar } from "@shopify/polaris";
 import UserMenuHeader from "./user_menu_header";
 import { useCallback, useMemo, useState } from "react";
 import type { UserMenuProps } from "@shopify/polaris/build/ts/src/components/TopBar";
-import { useUserStore } from "@/hooks/use_user_store";
+// import { useUserStore } from "@/hooks/use_user_store";
 import { useRouter } from "next/navigation";
+import { useUserAddressStore } from "@/hooks/use_user_store";
+import { api } from "@/config/axios";
+import { ServerResponse } from "@/types/app.type";
+import { useToast } from "@/hooks/use-toast";
+import { StatusCodes } from "http-status-codes";
 
 type TopBarMarkupProps = {
   setMobileNavigationActive: () => void;
@@ -13,9 +19,11 @@ const TopBarMarkup = ({ setMobileNavigationActive }: TopBarMarkupProps) => {
   const [searchValue, setSearchValue] = useState("");
   const [userMenuActive, setUserMenuActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const fullName = useUserStore((state) => state.fullName);
-  const reset = useUserStore((state) => state.reset);
+  const { toast } = useToast();
+
+  const { fullName } = useUserAddressStore();
 
   const router = useRouter();
 
@@ -29,8 +37,25 @@ const TopBarMarkup = ({ setMobileNavigationActive }: TopBarMarkupProps) => {
     [modalActive]
   );
 
-  const handleSignOut = useCallback(() => {
-    reset();
+  const handleSignOut = useCallback(async () => {
+    setLoading(true);
+
+    const res = (await api.delete("/address")).data as ServerResponse;
+
+    if (res.status === StatusCodes.OK) {
+      toast({
+        title: "Sign out successfully",
+        description: res.message,
+      });
+    } else {
+      toast({
+        title: "Sign out failed",
+        description: res.message,
+      });
+    }
+
+    setLoading(false);
+
     router.push("/");
   }, []);
 
@@ -71,10 +96,12 @@ const TopBarMarkup = ({ setMobileNavigationActive }: TopBarMarkupProps) => {
           destructive: true,
           content: "Sign out",
           onAction: handleSignOut,
+          loading: loading,
         }}
         secondaryActions={[
           {
             content: "Cancel",
+            disabled: loading,
             onAction: handleModalChange,
           },
         ]}

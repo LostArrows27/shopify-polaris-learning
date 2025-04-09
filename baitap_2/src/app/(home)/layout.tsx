@@ -2,6 +2,7 @@
 
 import LeftNavigation from "@/components/layout/left_navigation";
 import TopBarMarkup from "@/components/layout/top_bar_markup";
+import { Toaster } from "@/components/toast/toaster";
 import logo from "@/constants/logo";
 import { AppProvider, Frame } from "@shopify/polaris";
 import { useCallback, useState } from "react";
@@ -40,6 +41,7 @@ const HomeLayout = ({
           </div>
         </Frame>
       </div>
+      <Toaster />
     </AppProvider>
   );
 };

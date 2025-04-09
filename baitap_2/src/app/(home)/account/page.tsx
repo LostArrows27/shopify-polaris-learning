@@ -1,5 +1,4 @@
 "use client";
-
 import { DeleteIcon, UndoIcon } from "@shopify/polaris-icons";
 import {
   BlockStack,
@@ -10,27 +9,31 @@ import {
   InlineGrid,
   Text,
   TextField,
-  Toast,
   Tooltip,
 } from "@shopify/polaris";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import type { UserFormData } from "@/types/app.type";
+import type { ServerResponse, UserFormData } from "@/types/app.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/schema/user_schema";
-import { useUserStore } from "@/hooks/use_user_store";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useUserAddressStore } from "@/hooks/use_user_store";
+import { useToast } from "@/hooks/use-toast";
+import { api } from "@/config/axios";
+import { StatusCodes } from "http-status-codes";
+import { useUserInformation } from "@/hooks/use_user_information";
 
 const AccountPage = () => {
-  const [toastActive, setToastActive] = useState(false);
+  const { fullName, email, addresses, loading } = useUserAddressStore();
 
-  const { fullName, email, addresses, setUserInfo, setAddresses } =
-    useUserStore();
+  const { setUserInfo, setAddresses } = useUserInformation();
+
+  const { toast } = useToast();
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
@@ -63,17 +66,44 @@ const AccountPage = () => {
     }
   }, [fullName, email, addresses, reset]);
 
-  const onSubmit = (data: UserFormData) => {
-    setUserInfo(data.fullName.trim(), data.email);
-    setAddresses(
-      data.addresses.map((address) => ({
-        id: address.id,
-        address: address.address.trim(),
-        city: address.city.trim(),
-      }))
-    );
+  const onSubmit = async (data: UserFormData) => {
+    await updateUserAddress(data);
+
     reset(data);
-    setToastActive(true);
+
+    toast({
+      title: "Update address successfully",
+    });
+  };
+
+  const updateUserAddress = async (submitData: UserFormData) => {
+    try {
+      const res = (await api.post("/address", submitData))
+        .data as ServerResponse;
+
+      if (res.status === StatusCodes.OK) {
+        toast({
+          title: "Update address successfully",
+        });
+
+        setUserInfo(submitData.fullName.trim(), submitData.email);
+        setAddresses(
+          submitData.addresses.map((address) => ({
+            id: address.id,
+            address: address.address.trim(),
+            city: address.city.trim(),
+          }))
+        );
+      } else {
+        throw new Error(res.message);
+      }
+    } catch (error) {
+      console.error("Error updating address:", error);
+      toast({
+        title: (error as Error).message,
+        variant: "destructive",
+      });
+    }
   };
 
   const addNewAddressInput = useCallback(() => {
@@ -107,6 +137,7 @@ const AccountPage = () => {
                   <Controller
                     render={({ field }) => (
                       <TextField
+                        disabled={loading || isSubmitting}
                         label="Fullname"
                         error={errors.fullName?.message}
                         {...field}
@@ -119,6 +150,7 @@ const AccountPage = () => {
                   <Controller
                     render={({ field }) => (
                       <TextField
+                        disabled={loading || isSubmitting}
                         label="Email"
                         error={errors.email?.message}
                         {...field}
@@ -136,6 +168,7 @@ const AccountPage = () => {
                           reset({
                             fullName,
                             email,
+                            addresses: addresses || [],
                           });
                         }}
                       />
@@ -159,6 +192,7 @@ const AccountPage = () => {
                             control={control}
                             render={({ field }) => (
                               <TextField
+                                disabled={loading || isSubmitting}
                                 label={`Address ${index + 1}`}
                                 autoComplete="off"
                                 error={
@@ -173,6 +207,7 @@ const AccountPage = () => {
                             control={control}
                             render={({ field }) => (
                               <TextField
+                                disabled={loading || isSubmitting}
                                 label="City"
                                 autoComplete="off"
                                 error={errors.addresses?.[index]?.city?.message}
@@ -204,8 +239,17 @@ const AccountPage = () => {
                   )}
                 </BlockStack>
                 <div className="flex mt-5 w-full gap-2 justify-end">
-                  <Button onClick={addNewAddressInput}>New Address</Button>
-                  <Button submit variant="primary">
+                  <Button
+                    disabled={loading || isSubmitting}
+                    onClick={addNewAddressInput}
+                  >
+                    New Address
+                  </Button>
+                  <Button
+                    loading={loading || isSubmitting}
+                    submit
+                    variant="primary"
+                  >
                     Save
                   </Button>
                 </div>
@@ -214,15 +258,6 @@ const AccountPage = () => {
           </form>
         </InlineGrid>
       </div>
-      {toastActive && (
-        <Toast
-          onDismiss={() => {
-            setToastActive(false);
-          }}
-          content="Update successfully!"
-          duration={2000}
-        />
-      )}
     </>
   );
 };

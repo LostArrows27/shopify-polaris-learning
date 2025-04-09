@@ -1,39 +1,9 @@
 "use client";
 
-import {
-  InlineGrid,
-  Box,
-  BlockStack,
-  Text,
-  Avatar,
-  ResourceItem,
-  ResourceList,
-  Card,
-  EmptyState,
-} from "@shopify/polaris";
-import { useUserStore } from "@/hooks/use_user_store";
-import shortenName from "@/utils/shorten_name";
-import { useRouter } from "next/navigation";
+import AddressList from "@/components/address/address_list";
+import { InlineGrid, Box, BlockStack, Text, Card } from "@shopify/polaris";
 
 const Address = () => {
-  const addresses = useUserStore((state) => state.addresses);
-
-  const router = useRouter();
-
-  const emptyStateMarkup =
-    !addresses.length && !addresses.length ? (
-      <EmptyState
-        heading="You have no addresses yet"
-        action={{
-          onAction() {
-            router.push("/account");
-          },
-          content: "Add new address",
-        }}
-        image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
-      ></EmptyState>
-    ) : undefined;
-
   return (
     <div className="xl:w-3/4 w-[90%]">
       <div className="mb-10">
@@ -55,38 +25,7 @@ const Address = () => {
         <div></div>
         <BlockStack gap={"400"}>
           <Card>
-            <ResourceList
-              emptyState={emptyStateMarkup}
-              resourceName={{ singular: "customer", plural: "customers" }}
-              items={addresses.map((address) => ({
-                id: address.id,
-                name: address.city,
-                location: address.address,
-              }))}
-              renderItem={(item) => {
-                const { id, name, location } = item;
-                return (
-                  <ResourceItem
-                    id={id}
-                    key={id}
-                    url={"#"}
-                    media={
-                      <Avatar
-                        initials={shortenName(name)}
-                        size="md"
-                        name={shortenName(name)}
-                      />
-                    }
-                    accessibilityLabel={`View details for ${name}`}
-                  >
-                    <Text variant="bodyMd" fontWeight="bold" as="h3">
-                      {name}
-                    </Text>
-                    <div>{location}</div>
-                  </ResourceItem>
-                );
-              }}
-            />
+            <AddressList />
           </Card>
         </BlockStack>
       </InlineGrid>
