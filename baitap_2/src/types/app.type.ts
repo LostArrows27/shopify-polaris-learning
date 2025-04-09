@@ -17,3 +17,11 @@ export interface UserState {
 }
 
 export type UserFormData = z.infer<typeof userSchema>;
+
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
