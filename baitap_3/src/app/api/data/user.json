@@ -1,11 +1,16 @@
 {
-  "fullName": "Nguyễn Thành Dũng",
-  "email": "thelastofus2isnuts@gmail.com",
+  "fullName": "Sakurajima Mai",
+  "email": "mai@gmail.com",
   "addresses": [
     {
       "id": "5e6a640e-0e21-42e3-bc30-eec17ccc0dd6",
       "address": "Pham Van Dong, Cau Giay, Ha Noisss",
       "city": "Ha Noi"
+    },
+    {
+      "id": "3f08a1d5-01af-4892-84d5-eac9c4328247",
+      "address": "Küçük Mustafa, Atlı Sk. No:11",
+      "city": "Melikgazi"
     }
   ]
 }

@@ -58,7 +58,7 @@ export async function DELETE() {
     return serverResponse({
       status: StatusCodes.OK,
       message: "User addresses deleted successfully",
-    })
+    });
   } catch (err) {
     return serverErrorResponse(err);
   }
